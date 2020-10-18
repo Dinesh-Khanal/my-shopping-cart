@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import data from "./data.json";
 import Products from "./components/Products";
 import Filter from "./components/Filter";
+import Cart from "./components/Cart";
 
 function App() {
   const [products, setProducts] = useState(data.products);
   const [size, setSize] = useState("");
   const [sort, setSort] = useState("");
+  const [cartItems, setCartItems] = useState(
+    localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : []
+  );
 
   const filterProducts = (e) => {
     //console.log(e.target.value);
@@ -45,6 +51,29 @@ function App() {
     setSort(tempSort);
     setProducts(tempProducts);
   };
+  const addToCart = (product) => {
+    const tempCartItems = cartItems.slice(); // same as {...cartItms}
+    let alreadyInCart = false;
+    tempCartItems.forEach((item) => {
+      if (item._id === product._id) {
+        item.count++;
+        alreadyInCart = true;
+      }
+    });
+    if (!alreadyInCart) {
+      tempCartItems.push({ ...product, count: 1 });
+    }
+    localStorage.setItem("cartItems", JSON.stringify(tempCartItems));
+    setCartItems(tempCartItems);
+  };
+  const removeFromCart = (product) => {
+    const tempCartItems = cartItems.filter((item) => item._id !== product._id);
+    localStorage.setItem("cartItems", JSON.stringify(tempCartItems));
+    setCartItems(tempCartItems);
+  };
+  const createOrder = (order) => {
+    console.log(order.customer);
+  };
   return (
     <div className="grid-container">
       <header>
@@ -60,9 +89,15 @@ function App() {
               filterProducts={filterProducts}
               sortProducts={sortProducts}
             />
-            <Products products={products} />
+            <Products products={products} addToCart={addToCart} />
           </div>
-          <div className="sidebar">Cart Items</div>
+          <div className="sidebar">
+            <Cart
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+              createOrder={createOrder}
+            />
+          </div>
         </div>
       </main>
       <footer>All right is reserved</footer>
