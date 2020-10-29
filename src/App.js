@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import data from "./data.json";
 import Products from "./components/Products";
 import Filter from "./components/Filter";
 import Cart from "./components/Cart";
+import { fetchProducts } from "./myredux";
 
 function App() {
-  const [products, setProducts] = useState(data.products);
+  //const [products, setProducts] = useState(data.products);
+  const products = useSelector((state) => state.items);
   const [size, setSize] = useState("");
   const [sort, setSort] = useState("");
   const [cartItems, setCartItems] = useState(
@@ -13,23 +16,28 @@ function App() {
       ? JSON.parse(localStorage.getItem("cartItems"))
       : []
   );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const filterProducts = (e) => {
     //console.log(e.target.value);
     const tempSize = e.target.value;
     if (tempSize === "") {
       setSize("");
-      setProducts(data.products);
+      //setProducts(data.products);
       setSort("");
     } else {
       const newProducts = data.products.filter(
         (product) => product.availableSizes.indexOf(tempSize) >= 0
       );
       setSize(tempSize);
-      setProducts(newProducts);
+      //setProducts(newProducts);
       setSort("");
     }
   };
+
   const sortProducts = (e) => {
     //console.log(e.target.value);
     const tempSort = e.target.value;
@@ -49,8 +57,9 @@ function App() {
           : -1
       );
     setSort(tempSort);
-    setProducts(tempProducts);
+    //setProducts(tempProducts);
   };
+
   const addToCart = (product) => {
     const tempCartItems = cartItems.slice(); // same as {...cartItms}
     let alreadyInCart = false;
@@ -66,14 +75,17 @@ function App() {
     localStorage.setItem("cartItems", JSON.stringify(tempCartItems));
     setCartItems(tempCartItems);
   };
+
   const removeFromCart = (product) => {
     const tempCartItems = cartItems.filter((item) => item._id !== product._id);
     localStorage.setItem("cartItems", JSON.stringify(tempCartItems));
     setCartItems(tempCartItems);
   };
+
   const createOrder = (order) => {
     console.log(order.customer);
   };
+
   return (
     <div className="grid-container">
       <header>
@@ -89,7 +101,11 @@ function App() {
               filterProducts={filterProducts}
               sortProducts={sortProducts}
             />
-            <Products products={products} addToCart={addToCart} />
+            {products.length > 0 ? (
+              <Products products={products} addToCart={addToCart} />
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
           <div className="sidebar">
             <Cart

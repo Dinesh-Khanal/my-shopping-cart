@@ -190,3 +190,25 @@ form {
 input {
   padding: 0.5rem;
 }
+
+/* Product Detail */
+.product-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-height: 95vh;
+}
+.product-details-description {
+  flex: 1 1;
+  margin: 1rem;
+}
+.product-details img {
+  max-height: 92vh;
+  max-width: 46rem;
+}
+.close-modal {
+  position: absolute;
+  right: 1rem;
+  top: 2rem;
+  z-index: 100;
+}
