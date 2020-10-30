@@ -8,17 +8,18 @@ const Filter = () => {
   const size = useSelector((state) => state.products.size);
   const sort = useSelector((state) => state.products.sort);
   const dispatch = useDispatch();
-  const ordProducts = !filteredProducts ? products : filteredProducts;
   return (
     <div className="filter">
       <div className="filter-result">
-        {!products ? "Loading" : products.length} Products
+        {!filteredProducts ? "Loading" : filteredProducts.length} Products
       </div>
       <div className="filter-sort">
         Order{" "}
         <select
           value={sort}
-          onChange={(e) => dispatch(sortProducts(ordProducts, e.target.value))}
+          onChange={(e) =>
+            dispatch(sortProducts(filteredProducts, e.target.value))
+          }
         >
           <option>Latest</option>
           <option value="lowest">Lowest</option>

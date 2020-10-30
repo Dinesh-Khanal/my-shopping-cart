@@ -91,7 +91,7 @@ const productsReducer = (state = initialState, action) => {
         filteredItems: action.payload.items,
       };
     case "FETCH_PRODUCTS":
-      return { items: action.payload };
+      return { items: action.payload, filteredItems: action.payload };
     default:
       return state;
   }

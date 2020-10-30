@@ -6,11 +6,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../myredux";
 
 const Products = () => {
-  const allProducts = useSelector((state) => state.products.items);
-  const filteredProducts = useSelector((state) => state.products.filteredItems);
+  const products = useSelector((state) => state.products.filteredItems);
   const [product, setProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const products = !filteredProducts ? allProducts : filteredProducts;
   const dispatch = useDispatch();
 
   const openModal = (product) => {
@@ -75,7 +73,7 @@ const Products = () => {
                   <button
                     className="button primary"
                     onClick={() => {
-                      addToCart(product);
+                      dispatch(addToCart(product));
                       closeModal();
                     }}
                   >
