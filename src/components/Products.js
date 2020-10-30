@@ -2,10 +2,17 @@ import React, { useState } from "react";
 import formatCurrency from "../util";
 import Modal from "react-modal";
 import Zoom from "react-reveal/Zoom";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart } from "../myredux";
 
-const Products = ({ products, addToCart }) => {
+const Products = () => {
+  const allProducts = useSelector((state) => state.products.items);
+  const filteredProducts = useSelector((state) => state.products.filteredItems);
   const [product, setProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const products = !filteredProducts ? allProducts : filteredProducts;
+  const dispatch = useDispatch();
+
   const openModal = (product) => {
     setProduct(product);
     setModalOpen(true);
@@ -16,27 +23,31 @@ const Products = ({ products, addToCart }) => {
   };
   return (
     <div>
-      <ul className="products">
-        {products.map((product) => (
-          <li key={product._id}>
-            <div className="product">
-              <a href={"#" + product._id} onClick={() => openModal(product)}>
-                <img src={product.image} alt={product.title} />
-                <p>{product.title}</p>
-              </a>
-              <div className="product-price">
-                <div>{formatCurrency(product.price)}</div>
-                <button
-                  onClick={() => addToCart(product)}
-                  className="button primary"
-                >
-                  Add to Cart
-                </button>
+      {!products ? (
+        <div>Loading...</div>
+      ) : (
+        <ul className="products">
+          {products.map((product) => (
+            <li key={product._id}>
+              <div className="product">
+                <a href={"#" + product._id} onClick={() => openModal(product)}>
+                  <img src={product.image} alt={product.title} />
+                  <p>{product.title}</p>
+                </a>
+                <div className="product-price">
+                  <div>{formatCurrency(product.price)}</div>
+                  <button
+                    onClick={() => dispatch(addToCart(product))}
+                    className="button primary"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
       {product && (
         <Modal isOpen={modalOpen} onRequestClose={closeModal}>
           <Zoom>

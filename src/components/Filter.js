@@ -1,12 +1,25 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { sortProducts, filterProducts } from "../myredux";
 
-const Filter = ({ count, size, sort, filterProducts, sortProducts }) => {
+const Filter = () => {
+  const filteredProducts = useSelector((state) => state.products.filteredItems);
+  const products = useSelector((state) => state.products.items);
+  const size = useSelector((state) => state.products.size);
+  const sort = useSelector((state) => state.products.sort);
+  const dispatch = useDispatch();
+  const ordProducts = !filteredProducts ? products : filteredProducts;
   return (
     <div className="filter">
-      <div className="filter-result">{count} Products</div>
+      <div className="filter-result">
+        {!products ? "Loading" : products.length} Products
+      </div>
       <div className="filter-sort">
         Order{" "}
-        <select value={sort} onChange={sortProducts}>
+        <select
+          value={sort}
+          onChange={(e) => dispatch(sortProducts(ordProducts, e.target.value))}
+        >
           <option>Latest</option>
           <option value="lowest">Lowest</option>
           <option value="highest">Highest</option>
@@ -14,7 +27,10 @@ const Filter = ({ count, size, sort, filterProducts, sortProducts }) => {
       </div>
       <div className="filter-size">
         Filter{" "}
-        <select value={size} onChange={filterProducts}>
+        <select
+          value={size}
+          onChange={(e) => dispatch(filterProducts(products, e.target.value))}
+        >
           <option value="">ALL</option>
           <option value="XS">XS</option>
           <option value="S">S</option>

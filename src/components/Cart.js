@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import formatCurrency from "../util";
 import Fade from "react-reveal/Fade";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../myredux";
 
-const Cart = ({ cartItems, removeFromCart, createOrder }) => {
+const Cart = () => {
+  const cartItems = useSelector((state) => state.cart.cartItems);
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
     address: "",
   });
   const [showCheckOut, setShowCheckOut] = useState(false);
+  const dispatch = useDispatch();
   const handleInput = (e) => {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    const order = { customer, cartItems };
-    createOrder(order);
     setCustomer({
       name: "",
       email: "",
@@ -47,7 +49,7 @@ const Cart = ({ cartItems, removeFromCart, createOrder }) => {
                     <div className="right">
                       {formatCurrency(item.price)} X {item.count}{" "}
                       <button
-                        onClick={() => removeFromCart(item)}
+                        onClick={() => dispatch(removeFromCart(item))}
                         className="button"
                       >
                         Remove
