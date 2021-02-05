@@ -1,8 +1,12 @@
 const express = require("express");
+const favicon = require("express-favicon");
 const mongoose = require("mongoose");
-require("dotenv/config");
-const app = express();
 const path = require('path');
+
+const app = express();
+app.use(favicon(__dirname + '/build/favicon.ico'));
+app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'build')));
 
 //Body Parser Middleware
 app.use(express.json());
@@ -11,10 +15,9 @@ app.use(express.urlencoded({ extended: false }));
 //Use routes
 app.use("/api/products", require("./routes/products"));
 
-app.use((req, res, next) =>{
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+app.get('/*', (req, res) =>{
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-
 //connect to mongodb atlas
 mongoose.connect(
   process.env.DB_CONNECTION,
