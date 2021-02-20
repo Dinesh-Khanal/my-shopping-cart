@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import formatCurrency from "../util";
 import Fade from "react-reveal/Fade";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../myredux";
+import { removeFromCart, createOrder } from "../myredux";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -18,6 +18,14 @@ const Cart = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+    const order = {
+      name: customer.name,
+      email: customer.email,
+      address: customer.address,
+      cartItems,
+      total: cartItems.reduce((a, c) => a+c.price*c.count,0)
+    };
+    createOrder(order);
     setCustomer({
       name: "",
       email: "",
@@ -115,7 +123,7 @@ const Cart = () => {
                     />
                   </li>
                   <li>
-                    <button className="button primary">Checkout</button>
+                    <button className="button primary" type="submit">Checkout</button>
                   </li>
                 </ul>
               </form>

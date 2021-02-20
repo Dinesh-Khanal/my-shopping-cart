@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //Use routes
 app.use("/api/products", require("./routes/products"));
+app.use("/api/order", require("./routes/order"));
 
 app.get('/*', (req, res) =>{
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
