@@ -72,7 +72,21 @@ export const sortProducts = (filteredProducts, sort) => (dispatch) => {
     },
   });
 };
-
+//create action for createOrder
+export const createOrder = (order) => (dispatch) =>{
+  fetch("/api/order", {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(order)
+  })
+  .then(res => res.json())
+  .then(data =>{
+   dispatch({type:'CREATE_ORDER', payload: data})
+  //localStorage.clear("cartItems");
+  });
+}
 //Reducer
 const initialState = {};
 const productsReducer = (state = initialState, action) => {
@@ -110,10 +124,19 @@ const cartReducer = (
       return state;
   }
 };
+const orderReducer = (state = {}, action) =>{
+  switch(action.type){
+    case "CREATE_ORDER":
+      return{order: action.payload};
+    default:
+      return state;
+  }
+}
 
 const reducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
+  order: orderReducer
 });
 
 //store
