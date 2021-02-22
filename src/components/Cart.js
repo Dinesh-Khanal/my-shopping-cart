@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import formatCurrency from "../util";
 import Fade from "react-reveal/Fade";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, createOrder } from "../myredux";
+import { removeFromCart, createOrder, clearCart } from "../myredux";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -25,7 +25,8 @@ const Cart = () => {
       cartItems,
       total: cartItems.reduce((a, c) => a+c.price*c.count,0)
     };
-    createOrder(order);
+    dispatch(createOrder(order));
+    dispatch(clearCart());
     setCustomer({
       name: "",
       email: "",

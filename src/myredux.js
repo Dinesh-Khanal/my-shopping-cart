@@ -34,6 +34,10 @@ export const removeFromCart = (product) => (dispatch, getState) => {
   dispatch({ type: "REMOVE_FROM_CART", payload: { cartItems } });
   localStorage.setItem("cartItems", JSON.stringify(cartItems));
 };
+export const clearCart =() =>(dispatch) =>{
+  const cartItems = [];
+  dispatch({type: "CLEAR_CART", payload:{cartItems}});
+}
 
 export const filterProducts = (products, size) => (dispatch) => {
   dispatch({
@@ -73,19 +77,21 @@ export const sortProducts = (filteredProducts, sort) => (dispatch) => {
   });
 };
 //create action for createOrder
-export const createOrder = (order) => (dispatch) =>{
-  fetch("/api/order", {
+export const createOrder = (order) => async(dispatch) =>{
+try{
+ const resp = await fetch("/api/order", {
     method: 'POST',
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(order)
-  })
-  .then(res => res.json())
-  .then(data =>{
-   dispatch({type:'CREATE_ORDER', payload: data})
-  //localStorage.clear("cartItems");
   });
+  const data = await resp.json();
+   dispatch({type:'CREATE_ORDER', payload: data});
+   localStorage.clear("cartItems");
+}catch(err){
+  console.log(err);
+}
 }
 //Reducer
 const initialState = {};
@@ -120,6 +126,8 @@ const cartReducer = (
       return { cartItems: action.payload.cartItems };
     case "REMOVE_FROM_CART":
       return { cartItems: action.payload.cartItems };
+    case "CLEAR_CART":
+      return{cartItems: action.payload.cartItems}
     default:
       return state;
   }
