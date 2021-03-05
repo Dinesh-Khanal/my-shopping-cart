@@ -34,10 +34,10 @@ export const removeFromCart = (product) => (dispatch, getState) => {
   dispatch({ type: "REMOVE_FROM_CART", payload: { cartItems } });
   localStorage.setItem("cartItems", JSON.stringify(cartItems));
 };
-export const clearCart =() =>(dispatch) =>{
+export const clearCart = () => (dispatch) => {
   const cartItems = [];
-  dispatch({type: "CLEAR_CART", payload:{cartItems}});
-}
+  dispatch({ type: "CLEAR_CART", payload: { cartItems } });
+};
 
 export const filterProducts = (products, size) => (dispatch) => {
   dispatch({
@@ -77,22 +77,26 @@ export const sortProducts = (filteredProducts, sort) => (dispatch) => {
   });
 };
 //create action for createOrder
-export const createOrder = (order) => async(dispatch) =>{
-try{
- const resp = await fetch("/api/order", {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(order)
-  });
-  const data = await resp.json();
-   dispatch({type:'CREATE_ORDER', payload: data});
-   localStorage.clear("cartItems");
-}catch(err){
-  console.log(err);
-}
-}
+export const createOrder = (order) => async (dispatch) => {
+  try {
+    const resp = await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    });
+    const data = await resp.json();
+    dispatch({ type: "CREATE_ORDER", payload: data });
+    localStorage.clear("cartItems");
+  } catch (err) {
+    console.log(err);
+  }
+};
+//clear order
+export const clearOrder = () => (dispatch) => {
+  dispatch({ type: "CLEAR_ORDER" });
+};
 //Reducer
 const initialState = {};
 const productsReducer = (state = initialState, action) => {
@@ -127,24 +131,26 @@ const cartReducer = (
     case "REMOVE_FROM_CART":
       return { cartItems: action.payload.cartItems };
     case "CLEAR_CART":
-      return{cartItems: action.payload.cartItems}
+      return { cartItems: action.payload.cartItems };
     default:
       return state;
   }
 };
-const orderReducer = (state = {}, action) =>{
-  switch(action.type){
+const orderReducer = (state = {}, action) => {
+  switch (action.type) {
     case "CREATE_ORDER":
-      return{order: action.payload};
+      return { order: action.payload };
+    case "CLEAR_ORDER":
+      return { order: null };
     default:
       return state;
   }
-}
+};
 
 const reducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
-  order: orderReducer
+  orders: orderReducer,
 });
 
 //store

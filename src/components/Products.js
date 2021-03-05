@@ -47,7 +47,11 @@ const Products = () => {
         </ul>
       )}
       {product && (
-        <Modal isOpen={modalOpen} onRequestClose={closeModal}>
+        <Modal
+          isOpen={modalOpen}
+          onRequestClose={closeModal}
+          ariaHideApp={false}
+        >
           <Zoom>
             <button className="close-modal" onClick={closeModal}>
               X
@@ -61,10 +65,12 @@ const Products = () => {
                 <p>{product.description}</p>
                 <p>
                   Available Sizes:{" "}
-                  {product.availableSizes.map((x) => (
+                  {product.availableSizes.map((x, index) => (
                     <span>
                       {" "}
-                      <button className="button">{x}</button>
+                      <button className="button" key={index}>
+                        {x}
+                      </button>
                     </span>
                   ))}
                 </p>
