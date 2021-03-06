@@ -5,6 +5,7 @@ import Fade from "react-reveal/Fade";
 import Zoom from "react-reveal/Zoom";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, createOrder, clearCart, clearOrder } from "../myredux";
+import MyPayPal from "./MyPayPal";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -14,19 +15,20 @@ const Cart = () => {
     email: "",
     address: "",
   });
+  const totalPrice = cartItems.reduce((a, c) => a + c.price * c.count, 0);
   const [showCheckOut, setShowCheckOut] = useState(false);
   const dispatch = useDispatch();
   const handleInput = (e) => {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   };
   const handleSubmit = (event) => {
-    event.preventDefault();
+    //event.preventDefault(); payPal checkout btn does not submit form so comment out it.
     const newOrder = {
       name: customer.name,
       email: customer.email,
       address: customer.address,
       cartItems,
-      total: cartItems.reduce((a, c) => a + c.price * c.count, 0),
+      total: totalPrice,
     };
     dispatch(createOrder(newOrder));
     dispatch(clearCart());
@@ -35,7 +37,6 @@ const Cart = () => {
   const closeModal = () => {
     dispatch(clearOrder());
   };
-  order && console.log(order);
   return (
     <div>
       {cartItems.length === 0 ? (
@@ -170,9 +171,12 @@ const Cart = () => {
                     />
                   </li>
                   <li>
-                    <button className="button primary" type="submit">
+                    {/* <button className="button primary" type="submit">
                       Checkout
-                    </button>
+                    </button> */}
+                    <div className="payPal-btn">
+                      <MyPayPal submit={handleSubmit} totalPrice={totalPrice} />
+                    </div>
                   </li>
                 </ul>
               </form>

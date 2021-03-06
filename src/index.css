@@ -190,6 +190,9 @@ form {
 input {
   padding: 0.5rem;
 }
+.payPal-btn {
+  text-align: center;
+}
 
 /* Product Detail */
 .product-details {
